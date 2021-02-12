@@ -6,6 +6,8 @@
 /_____/\__,_/_/_/_/\__, / |__/|__/\__,_/_/   \___/ 
                   /____/                           
 BullyHunter#2252
+
+meth_for_execution.lua created so it all lives in one file to be then easily injected into garrysmod via 3rd party software.
 ]]--
 
 methamphetamine = {}

@@ -6,6 +6,8 @@
 /_____/\__,_/_/_/_/\__, / |__/|__/\__,_/_/   \___/ 
                   /____/                           
 BullyHunter#2252
+
+Created for 3rd party lua execution compatibility
 ]]--
 
 methamphetamine = {}

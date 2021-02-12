@@ -7,37 +7,37 @@ Press `0` to open the menu, anticheats may detect you pressing insert. Better sa
 
 Features:
 - ESP:
-    Colors:
-        Rainbow
-        Selected Color
-        Health Color (MOST SUPPORT THIS)
-        Team Color (MOST SUPPORT THIS)
-    Box:
-        draws bounding box
-    Chams:
-        Player chams
-        Weapon chams
-    Others:
-        Include many features not made yet
+    -Colors:
+        -Rainbow
+        -Selected Color
+        -Health Color (MOST SUPPORT THIS)
+        -Team Color (MOST SUPPORT THIS)
+    -Box:
+        -draws bounding box
+    -Chams:
+        -Player chams
+        -Weapon chams
+    -Others:
+        -Include many features not made yet
 - Aimbot:
-    Hitbox Aim:
-        Head
-        Torso
-        Hitscan (torso, needs to be made)
-    Silent Aim:
-        Does jack shit
-    Smooth Aim:
-        Uses Lerp to make your aim smooth
-    Ignore filter:
-        Transparent players
-        Friends
-        Party members (does nothing)
-        Same team
-        Selected teams
-        Noclipping players
-        Invisible (Same as transparent)
-    Autofire:
-        OP as balls if used correctly
+    -Hitbox Aim:
+        -Head
+        -Torso
+        -Hitscan (torso, needs to be made)
+    -Silent Aim:
+        -Does jack shit
+    -Smooth Aim:
+        -Uses Lerp to make your aim smooth
+    -Ignore filter:
+        -Transparent players
+        -Friends
+        -Party members (does nothing)
+        -Same team
+        -Selected teams
+        -Noclipping players
+        -Invisible (Same as transparent)
+    -Autofire:
+        -OP as balls if used correctly
     
 - Recoil Control (WIP)
 - AntiScreengrab:

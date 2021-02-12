@@ -5,8 +5,8 @@ This is just a little project of mine. Its a work in progress, it is not finishe
 I dont mind if someone doesn't like it
 
 Instructions:
-    - Put the materials within `methamphetamine-public/materials` into `garrysmod/materials` so it should be `garrysmod/materials/meth/mascots/`.
-    - Put the 'meth' lua folder within `garrysmod/lua` so it should be `garrysmod/lua/meth/core.lua`
+- Put the materials within `methamphetamine-public/materials` into `garrysmod/materials` so it should be `garrysmod/materials/meth/mascots/`. 
+- Put the 'meth' lua folder within `garrysmod/lua` so it should be `garrysmod/lua/meth/core.lua`
 
 
 

@@ -2804,7 +2804,7 @@ function PANEL:Init()
         pnl.dropdown:SetVisible( not pnl.dropdown:IsVisible() )
     end
 
-    local dropdown = methamphetamine.windowsf
+    local dropdown = methamphetamine.windows
     
     for k, v in ipairs( dropdown ) do
         local dd = self.menubar.windows.dropdown:Add("DButton")

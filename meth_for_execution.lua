@@ -773,7 +773,7 @@ mods:Add("Force close", function(mod,toggle)
     methamphetamine.master:SetVisible(false)
 end)
 
-return mods
+methamphetamine.windows = mods
 
 
 

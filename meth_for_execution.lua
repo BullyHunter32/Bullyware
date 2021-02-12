@@ -6,8 +6,6 @@
 /_____/\__,_/_/_/_/\__, / |__/|__/\__,_/_/   \___/ 
                   /____/                           
 BullyHunter#2252
-
-meth_for_execution.lua created so it all lives in one file to be then easily injected into garrysmod via 3rd party software.
 ]]--
 
 methamphetamine = {}
@@ -33,7 +31,7 @@ methamphetamine["colors"] = {
     ["gripbackground"] = Color(37,37,37),
     ["backgroundmascot"] = Color(255,255,255,70)
 }
-
+local LocalPlayer = LocalPlayer()
 -- circles
 
 if SERVER then return false end
@@ -569,7 +567,7 @@ mods:Add("Spectators", function( mod, toggle )
             v:Remove()
         end
         for k , v in ipairs( player.GetAll() ) do
-            if v:GetObserverTarget() == LocalPlayer() then
+            if v:GetObserverTarget() == LocalPlayer then
                 mod.panel.names[#mod.panel.names + 1] = mod.panel:Add("DLabel")
                 local pnl = mod.panel.names[#mod.panel.names]
                 pnl:Dock(TOP)
@@ -604,15 +602,15 @@ mods:Add("Radar", function( mod, toggle )
     local deadplayerarrow = Color(240,90,90)
     mod.panel.PaintOver = function(pnl,w,h)
 
-        local angs = LocalPlayer():GetAngles()
+        local angs = LocalPlayer:GetAngles()
         surface.SetMaterial( plyarrow ) 
         surface.SetDrawColor( plycol ) -- YOU
         surface.DrawTexturedRectRotated(w/2-8,h/2-8,16,16, angs.y  )
         for k , v in ipairs( player.GetAll() ) do
-            --if LocalPlayer():GetPos():DistToSqr( v:GetPos() ) > 300*300 or v == LocalPlayer() then return end
-            if v == LocalPlayer() then goto skip end
+            --if LocalPlayer:GetPos():DistToSqr( v:GetPos() ) > 300*300 or v == LocalPlayer then return end
+            if v == LocalPlayer then goto skip end
 
-            local plypos = (LocalPlayer():GetShootPos() - v:GetPos())
+            local plypos = (LocalPlayer:GetShootPos() - v:GetPos())
             --print( plypos )
             local plyang = v:EyeAngles()
             surface.SetMaterial( plyarrow ) 
@@ -668,7 +666,7 @@ local function PlaySong( link )
         if IsValid( chan ) then
             hook.Add("Think","methamphetamine.radio",function()
             
-                chan:SetPos(  LocalPlayer():GetPos() )
+                chan:SetPos(  LocalPlayer:GetPos() )
 
             end)
             methamphetamine.currentradiostation = chan
@@ -3560,7 +3558,6 @@ methamphetamine.bones = {
     "ValveBiped.Bip01_L_Toe0"  
 }
 
-local LocalPlayer = LocalPlayer()
 
 local function meth_getPlayers()
     return player.GetAll()
@@ -4134,20 +4131,20 @@ methamphetamine.espentities = methamphetamine.GetESPEntites()
     -- drawSurfaceLine( scrw/2 - 14 , scrh / 2 , scrw/2 + 15 , scrh / 2 )
     -- drawSurfaceLine( scrw/2 , scrh / 2 - 14 , scrw/2 , scrh/2 + 15 )
     -- for k , v in ipairs( GetAllPlayers() ) do
-    --     if not v:Alive() or v == LocalPlayer() then goto skipdrawing end
+    --     if not v:Alive() or v == LocalPlayer then goto skipdrawing end
 
     --     surface.SetDrawColor( Color(20,200,40) )
     --     local headpos = v:LookupBone( methamphetamine.bones[1] )
     --     if headpos then
     --         headpos = v:GetBonePosition(v:LookupBone(methamphetamine.bones[1]))
-    --         local diff = headpos - LocalPlayer():GetShootPos()
-    --         if LocalPlayer():GetAimVector():Dot(diff) / diff:Length() >= 0.75 then
+    --         local diff = headpos - LocalPlayer:GetShootPos()
+    --         if LocalPlayer:GetAimVector():Dot(diff) / diff:Length() >= 0.75 then
     --             headpos = headpos:ToScreen()
     --             surface.DrawLine(ScrW()/2,ScrH()/2,headpos.x,headpos.y)
     --         end
     --     end
 
-    --     if LocalPlayer():GetPos():DistToSqr( v:GetPos() ) > methamphetamine.mods["ESP"].Range*methamphetamine.mods["ESP"].Range then goto skipdrawing end
+    --     if LocalPlayer:GetPos():DistToSqr( v:GetPos() ) > methamphetamine.mods["ESP"].Range*methamphetamine.mods["ESP"].Range then goto skipdrawing end
 
     --     local activecol = team.GetColor( v:Team() )
     --     surface.SetDrawColor( activecol )
@@ -4218,8 +4215,8 @@ addHook("HUDPaint","methamphetamine.esp",function()
     if not methamphetamine.mods["ESP"].MasterToggle then return end
     local rainbow = HSVToColor( (CurTime()*20)%360,1,1 )
     for k , v in ipairs( GetAllPlayers() ) do
-        if v:Health() <= 0 or v == LocalPlayer() then goto skiprender end
-        if LocalPlayer():GetPos():DistToSqr( v:GetPos() ) > methamphetamine.mods["ESP"].Range*methamphetamine.mods["ESP"].Range then goto skiprender end
+        if v:Health() <= 0 or v == LocalPlayer then goto skiprender end
+        if LocalPlayer:GetPos():DistToSqr( v:GetPos() ) > methamphetamine.mods["ESP"].Range*methamphetamine.mods["ESP"].Range then goto skiprender end
         local teamcolor = GetTeamColor( v:Team() )
         local healthcolor = Color( 255 * (1 - (v:Health() / v:GetMaxHealth())) , 255 * (v:Health()/v:GetMaxHealth()), 0 )
         local MaxX,MaxY,MinX,MinY,V1,V2,V3,V4,V5,V6,V7,V8 = getBounds( v )
@@ -4333,7 +4330,7 @@ hook.Add( "PostDrawOpaqueRenderables", "methamphetamine.chams", function()
         local champcol = color_white
         for _, ent in ipairs( GetAllPlayers() ) do
             if not ent:Alive() then goto skipdrawing end
-            if LocalPlayer():GetPos():DistToSqr( ent:GetPos() ) > methamphetamine.mods["ESP"].Range*methamphetamine.mods["ESP"].Range then goto skipdrawing end
+            if LocalPlayer:GetPos():DistToSqr( ent:GetPos() ) > methamphetamine.mods["ESP"].Range*methamphetamine.mods["ESP"].Range then goto skipdrawing end
             if methamphetamine.mods["ESP"].colortype["Chams [P.]"] == "Selected Color" then
                 champcol = ( colors["Chams [P.]"] or color_white )
             elseif methamphetamine.mods["ESP"].colortype["Chams [P.]"] == "Rainbow" then
@@ -4365,7 +4362,7 @@ hook.Add( "PostDrawOpaqueRenderables", "methamphetamine.chams", function()
         for _, ent in ipairs( GetAllPlayers() ) do
             ent = ent:GetActiveWeapon()
             if not IsValid( ent ) then goto skipdrawing end
-            if LocalPlayer():GetPos():DistToSqr( ent:GetPos() ) > methamphetamine.mods["ESP"].Range*methamphetamine.mods["ESP"].Range then goto skipdrawing end
+            if LocalPlayer:GetPos():DistToSqr( ent:GetPos() ) > methamphetamine.mods["ESP"].Range*methamphetamine.mods["ESP"].Range then goto skipdrawing end
             if methamphetamine.mods["ESP"].colortype["Chams [W.]"] == "Selected Color" then
                 champcol = ( colors["Chams [W.]"] or color_white )
             elseif methamphetamine.mods["ESP"].colortype["Chams [W.]"] == "Rainbow" then
@@ -4391,7 +4388,7 @@ addHook("PreDrawHalos","methamphetamine.halos",function()
 
 
     for k , v in ipairs( GetAllPlayers() ) do
-        if LocalPlayer():GetPos():DistToSqr( v:GetPos() ) > methamphetamine.mods["ESP"].Range*methamphetamine.mods["ESP"].Range then goto skipdrawing end
+        if LocalPlayer:GetPos():DistToSqr( v:GetPos() ) > methamphetamine.mods["ESP"].Range*methamphetamine.mods["ESP"].Range then goto skipdrawing end
         local teamcolor = GetTeamColor( v:Team() )
         local healthcolor = Color( 255 * (1 - (v:Health() / v:GetMaxHealth())) , 255 * (v:Health()/v:GetMaxHealth()), 0 )
         local rainbow = HSVToColor( (CurTime()*20)%360,1,1 )

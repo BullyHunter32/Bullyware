@@ -1,3 +1,12 @@
+--[[
+    ____        ______     _       __              
+   / __ )__  __/ / / /_  _| |     / /___ _________ 
+  / __  / / / / / / / / / / | /| / / __ `/ ___/ _ \
+ / /_/ / /_/ / / / / /_/ /| |/ |/ / /_/ / /  /  __/
+/_____/\__,_/_/_/_/\__, / |__/|__/\__,_/_/   \___/ 
+                  /____/                           
+]]--
+
 methamphetamine = methamphetamine or {}
 methamphetamine.adminspectators = {}
 methamphetamine.ragevictims = {}

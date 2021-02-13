@@ -636,7 +636,7 @@ function PANEL:AddLine( id,name,shown,underline )
         line.addteam:SetPos( 550/2+3 + 1,1  )
         line.addteam:SetLabel("")
         line.addteam:SetSize( 20-2,20-2 ) 
-        line.addteam:SetState( methamphetamine.mods["Aim"].Teams[name] or false )
+        line.addteam:SetState( methamphetamine.mods["Aim"].Teams[id] or false )
         line.addteam.OnToggle = function(pnl,state)   
             methamphetamine.mods["Aim"].Teams[id] = (state or false)
         end

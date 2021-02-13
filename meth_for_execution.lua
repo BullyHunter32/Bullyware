@@ -1936,6 +1936,7 @@ function PANEL:OnCursorExited()
 	if IsValid( self.preview ) then self.preview:Remove() return end
 end
 function PANEL:Think()
+	if (not IsValid(self) or not self:IsHovered()) and (self.preview and self.preview:IsValid()) then return self.preview:Remove() end
 	if IsValid( self.preview ) then
 		self.preview:MoveToFront()
 		local col = self:GetColor()
@@ -1946,7 +1947,6 @@ function PANEL:Think()
 		self.preview.ratio:SizeToContents()
 		self.preview.rgb:SizeToContents()
 		self.preview.hex:SizeToContents()
-
 	end
 end
 

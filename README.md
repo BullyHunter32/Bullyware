@@ -17,8 +17,12 @@ Press `0` to open the menu, anticheats may detect you pressing insert. Better sa
 
 Preview(s):
 - https://imgur.com/usi8SIO
+- https://imgur.com/OwDDxzd
 
 Features:
+- Entity ESP:
+    - Updates internal table of entities every 15 seconds to minimize lag
+    - Add entities via the environemnt list
 - ESP:
     - Colors:
         - Rainbow

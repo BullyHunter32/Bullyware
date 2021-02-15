@@ -9,6 +9,8 @@ I dont mind if someone doesn't like it
 Instructions:
 - Put the materials within `methamphetamine-public/materials` into `garrysmod/materials` so it should be `garrysmod/materials/meth/mascots/`. 
 - Put the 'meth' lua folder within `garrysmod/lua` so it should be `garrysmod/lua/meth/core.lua`
+- Install 'Raleway' font from google :)
+    - https://fonts.google.com/specimen/Raleway?preview.text_type=custom
 
 
 

@@ -15,10 +15,8 @@ Instructions:
 To use you run `lua_openscript_cl meth/core.lua` in the console.
 Press `0` to open the menu, anticheats may detect you pressing insert. Better safe than sorry :)
 
-Previews:
+Preview(s):
 - https://imgur.com/usi8SIO
-- https://imgur.com/QJliUlB
-- https://imgur.com/taUtXTg
 
 Features:
 - ESP:

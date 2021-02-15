@@ -351,6 +351,7 @@ addHook("HUDPaint","methamphetamine.esp",function()
                 { x = MaxX + margin - 1, y = MinY + 1 + diff}, 
             })
         end
+        surface.SetFont(methamphetamine.default.font)
         local _,TEXT_MARGIN_INCREMENT = surface.GetTextSize("012376543")
         if methamphetamine.mods["ESP"].enabled["Name"] then
             if methamphetamine.mods["ESP"].colortype["Name"] == "Selected Color" then

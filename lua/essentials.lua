@@ -30,7 +30,7 @@ function PANEL:Init()
     methamphetamine.mods["Aim"]["Smooth"] = 0
     methamphetamine.mods["Aim"]["RecoilControl"] = 0
     methamphetamine.mods["Aim"]["Limb"] = "Head"
-    methamphetamine.mods["Aim"]["Teams"] = {}
+    methamphetamine.mods["Teams"] = {}
     methamphetamine.mods["Aim"]["Ignore"] = {
         Friends = false,
         Noclipping = false,
@@ -937,6 +937,11 @@ function  PANEL:Init()
     }
     methamphetamine.mods["ESP"]["types"] = {
         ["Box"] = "2D [None]",
+        ["Health [Txt]"] = "Top",
+        ["Name"] = "Top",
+        ["Distance"] = "Top",
+        ["Team"] = "Top",
+        ["Rank"] = "Top",
     }
     methamphetamine.mods["ESP"]["colortype"] = {
         ["Box"] = "Selected Color",

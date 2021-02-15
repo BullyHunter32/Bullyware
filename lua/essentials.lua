@@ -30,7 +30,7 @@ function PANEL:Init()
     methamphetamine.mods["Aim"]["Smooth"] = 0
     methamphetamine.mods["Aim"]["RecoilControl"] = 0
     methamphetamine.mods["Aim"]["Limb"] = "Head"
-    methamphetamine.mods["Teams"] = {}
+    methamphetamine.mods["Aim"]["Teams"] = {}
     methamphetamine.mods["Aim"]["Ignore"] = {
         Friends = false,
         Noclipping = false,

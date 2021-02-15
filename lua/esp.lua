@@ -1,13 +1,3 @@
---[[
-    ____        ______     _       __              
-   / __ )__  __/ / / /_  _| |     / /___ _________ 
-  / __  / / / / / / / / / / | /| / / __ `/ ___/ _ \
- / /_/ / /_/ / / / / /_/ /| |/ |/ / /_/ / /  /  __/
-/_____/\__,_/_/_/_/\__, / |__/|__/\__,_/_/   \___/ 
-                  /____/                           
-]]--
-
-
 local GetAllPlayers = player.GetAll
 local ipairs = ipairs
 local addHook = hook.Add
@@ -108,7 +98,6 @@ methamphetamine.mods["ESP"].Entities = {}
 function methamphetamine.GetESPEntites()
     local returned = {}
     for k ,v in ipairs( ents.GetAll() ) do
-        --print( k,v:GetClass() )
         if methamphetamine.mods["ESP"].Entities[ v:GetClass() ] then
             print(k,v)
             returned[#returned + 1] = v
@@ -117,96 +106,24 @@ function methamphetamine.GetESPEntites()
     return returned
 end
 methamphetamine.espentities = methamphetamine.GetESPEntites()
--- timer.Create("methamphetamine.updateentityesp", 15, 0 , function()
---     methamphetamine.espentities = methamphetamine.GetESPEntites()
--- end)
 
+timer.Create("methamphetamine.updateentityesp", 15, 0 , function()
+    methamphetamine.espentities = methamphetamine.GetESPEntites()
+end)
 
--- addHook("HUDPaint","methamphetamine.esp",function()
---     if methamphetamine.screengrab then return end
-
---     if CurTime() - methamphetamine.lastscreengrab < 5 then
---         surface.SetDrawColor( vguicolors.background )
---         surface.DrawRect(ScrW() /2 - 110,0,220,30)
---         surface.SetDrawColor( vguicolors.border )
---         surface.DrawOutlinedRect(ScrW() / 2 - 110,0,220,30)
---         surface.SetFont( methamphetamine.default.font )
---         surface.SetTextColor( vguicolors.text )
---         surface.SetTextPos( ScrW() / 2 - 75,8 )
---         surface.DrawText("You were screengrabbed")
---     end
-
-    -- --local rainbowcol = HSVToColor( CurTime() * 100 % 360, 1, 1 )
-    
-    -- surface.SetDrawColor( methamphetamine.mods["ESP"].colors.crosshair )
-    -- drawSurfaceLine( scrw/2 - 14 , scrh / 2 , scrw/2 + 15 , scrh / 2 )
-    -- drawSurfaceLine( scrw/2 , scrh / 2 - 14 , scrw/2 , scrh/2 + 15 )
-    -- for k , v in ipairs( GetAllPlayers() ) do
-    --     if not v:Alive() or v == LocalPlayer() then goto skipdrawing end
-
-    --     surface.SetDrawColor( Color(20,200,40) )
-    --     local headpos = v:LookupBone( methamphetamine.bones[1] )
-    --     if headpos then
-    --         headpos = v:GetBonePosition(v:LookupBone(methamphetamine.bones[1]))
-    --         local diff = headpos - LocalPlayer():GetShootPos()
-    --         if LocalPlayer():GetAimVector():Dot(diff) / diff:Length() >= 0.75 then
-    --             headpos = headpos:ToScreen()
-    --             surface.DrawLine(ScrW()/2,ScrH()/2,headpos.x,headpos.y)
-    --         end
-    --     end
-
-    --     if LocalPlayer():GetPos():DistToSqr( v:GetPos() ) > methamphetamine.mods["ESP"].Range*methamphetamine.mods["ESP"].Range then goto skipdrawing end
-
-    --     local activecol = team.GetColor( v:Team() )
-    --     surface.SetDrawColor( activecol )
-    --     drawBones( v )
-    --     local MaxX, MaxY, MinX, MinY = getBounds( v )
-    --     surface.DrawLine( MaxX, MaxY, MinX, MaxY )
-    --     surface.DrawLine( MaxX, MaxY, MaxX, MinY )
-    --     surface.DrawLine( MinX, MinY, MaxX, MinY )
-    --     surface.DrawLine( MinX, MinY, MinX, MaxY )
-    --     local headpos = v:LookupBone(bones[1]) 
-    --     if headpos != nil then
-    --         headpos = v:GetBonePosition(v:LookupBone(bones[1])):ToScreen()
-    --         surface.SetFont( methamphetamine.default.font )
-    --         local name = v:Nick() .. " {".. v:GetUserGroup() .. "} "
-    --         local namewide,nametall = surface.GetTextSize(name)
-    --         surface.SetTextColor( activecol )
-    --         surface.SetTextPos(  ((MaxX-MinX)/2)+MinX - namewide/2, MinY-30 )
-    --         surface.DrawText( name )
-
-    --         local health = "HP: "..v:Health() 
-    --         local healthwide,healthtall = surface.GetTextSize(health)
-    --         surface.SetTextPos(  ((MaxX-MinX)/2)+MinX - healthwide/2, MinY-18 )
-    --         surface.DrawText( health )
-    --     else
-    --         --headpos = v:GetBonePosition(v:LookupBone(bones[1])):ToScreen()
-    --         surface.SetFont( methamphetamine.default.font )
-    --         local name = v:Nick() .. " {".. v:GetUserGroup() .. "} "
-    --         local namewide,nametall = surface.GetTextSize(name)
-    --         surface.SetTextColor( activecol )
-    --         surface.SetTextPos(  ((MaxX-MinX)/2)+MinX - namewide/2, MinY-30 )
-    --         surface.DrawText( name )
-
-    --         local health = "HP: "..v:Health() 
-    --         local healthwide,healthtall = surface.GetTextSize(health)
-    --         surface.SetTextPos(  ((MaxX-MinX)/2)+MinX - healthwide/2, MinY-18 )
-    --         surface.DrawText( health )
-    --     end
-    --     ::skipdrawing::
-    -- end
-
---     for k , v in ipairs(methamphetamine.espentities) do
---         if not IsValid(v) then table.remove(methamphetamine.espentities,k) return end
---         local entpos = (v:GetPos() + v:OBBCenter()):ToScreen()
---         local text = v:GetClass()
---         surface.SetFont( methamphetamine.default.font )
---         surface.SetTextColor( color_white )
---         local textwide,texttall = surface.GetTextSize( text)
---         surface.SetTextPos( entpos.x - textwide/2,entpos.y-texttall/2 )
---         surface.DrawText( text )
---     end
--- end)
+addHook("HUDPaint","methamphetamine.entityesp",function()
+    if methamphetamine.screengrab then return end
+    for k , v in ipairs(methamphetamine.espentities) do
+        if not IsValid(v) then table.remove(methamphetamine.espentities,k) return end
+        local entpos = (v:GetPos() + v:OBBCenter()):ToScreen()
+        local text = v:GetClass()
+        surface.SetFont( methamphetamine.default.font )
+        surface.SetTextColor( color_white )
+        local textwide,texttall = surface.GetTextSize( text)
+        surface.SetTextPos( entpos.x - textwide/2,entpos.y-texttall/2 )
+        surface.DrawText( text )
+    end
+end)
 
 local cachedTeamColors = {}
 methamphetamine.GetTeamColor = function(iTeam)

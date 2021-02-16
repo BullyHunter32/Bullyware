@@ -205,6 +205,7 @@ function  methamphetamine:GetClosestPlayer()
     local tTargets = {}
     for k , v in ipairs(player.GetAll()) do
         if v == LocalPlayer or not v:Alive() then goto skipTargetGathering end
+        if not methamphetamine:IsPlayerWithinFOV(v,0.95) then goto skipTargetGathering end
         if methamphetamine.mods["Aim"]["Ignore"]["Friends"] then
             if methamphetamine.friends[v] then goto skipTargetGathering end
         elseif methamphetamine.mods["Aim"]["Ignore"]["Noclipping"] then
@@ -336,8 +337,8 @@ function methamphetamine:GetClosestPlayerToCrosshair()
         elseif methamphetamine.mods["Aim"]["Ignore"]["Party"] then
 
         end
+        if not methamphetamine:IsPlayerWithinFOV(v,0.95) then goto skip end
         if not closest then closest = v end
-
         local bonepos = v:LookupBone( self.limbs["Spine"] ) and v:GetBonePosition( v:LookupBone( self.limbs["Spine"] ) ) or v:GetPos() + v:OBBCenter()
         local closestbonepos = closest:LookupBone( self.limbs["Spine"] ) and closest:GetBonePosition( closest:LookupBone( self.limbs["Spine"] ) ) or closest:GetPos() + closest:OBBCenter()
         local diff = bonepos - LocalPlayer:GetShootPos()
@@ -512,9 +513,11 @@ concommand.Add("methamphetamine_addragevictims", function( ply, cmd, args )
 end)
 
 
-    
+
+--local player = meth_getPlayers()[2]         
 hook.Add("HUDPaint", "Aimbot", function()
     if !methamphetamine.mods.ESP.MasterToggle or !methamphetamine.mods.Aim.enabled then return end
     local r = ScrH() * math.tan(math.rad(methamphetamine.mods["Aim"].FOV/2)) / (2*math.tan(math.rad(LocalPlayer:GetFOV()/2))) -- ScrH() * math.tan(math.rad(fov/2)) / (2*math.tan(math.rad(plyFov/2)))
     surface.DrawCircle( ScrW()/2,ScrH()/2,r, 255,255,255 )
+
 end)

@@ -94,12 +94,6 @@ function PANEL:Init()
     options.Key.Button:MethToolTip("Enables the aimbot only when this key is pressed.")
     options.Key.Button:SetText("Always")
     options.Key.Button:SetValue( methamphetamine.mods["Aim"].Key )
-    options.Key.Button:SetTextColor( methamphetamine.colors.text )
-    options.Key.Button:SetFont( methamphetamine.default.font )
-    options.Key.Button.Paint = function(pnl,w,h)
-        surface.SetDrawColor( (pnl:IsHovered() and  methamphetamine.colors.activetoggle) or methamphetamine.colors.buttonidle )
-        surface.DrawRect(0,0,w,h)
-    end
     options.Key.Button.OnChange = function(pnl,new)
         print("Selected ", new , input.GetKeyName( new ) )
         methamphetamine.mods["Aim"]["Key"] = new
@@ -909,6 +903,7 @@ espdata.options = {
 local PANEL = {}
 
 function  PANEL:Init()
+    methamphetamine.mods["ESP"].masterToggleKeybind = 0
     methamphetamine.mods["ESP"]["colors"] = {
         ["Box"] = color_white,
         ["Health [Txt]"] = color_white,

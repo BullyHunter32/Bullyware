@@ -1,3 +1,12 @@
+--[[
+    ____        ______     _       __              
+   / __ )__  __/ / / /_  _| |     / /___ _________ 
+  / __  / / / / / / / / / / | /| / / __ `/ ___/ _ \
+ / /_/ / /_/ / / / / /_/ /| |/ |/ / /_/ / /  /  __/
+/_____/\__,_/_/_/_/\__, / |__/|__/\__,_/_/   \___/ 
+                  /____/                           
+]]--
+
 local GetAllPlayers = player.GetAll
 local ipairs = ipairs
 local addHook = hook.Add
@@ -115,6 +124,7 @@ addHook("HUDPaint","methamphetamine.entityesp",function()
     if methamphetamine.screengrab then return end
     for k , v in ipairs(methamphetamine.espentities) do
         if not IsValid(v) then table.remove(methamphetamine.espentities,k) return end
+        if v:GetPos():DistToSqr(LocalPlayer():GetPos()) > methamphetamine.mods.ESP.Range*methamphetamine.mods.ESP.Range then goto skipEntityRendering end
         local entpos = (v:GetPos() + v:OBBCenter()):ToScreen()
         local text = v:GetClass()
         surface.SetFont( methamphetamine.default.font )
@@ -122,6 +132,7 @@ addHook("HUDPaint","methamphetamine.entityesp",function()
         local textwide,texttall = surface.GetTextSize( text)
         surface.SetTextPos( entpos.x - textwide/2,entpos.y-texttall/2 )
         surface.DrawText( text )
+        ::skipEntityRendering::
     end
 end)
 

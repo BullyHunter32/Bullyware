@@ -7,6 +7,7 @@
                   /____/                           
 ]]--
 
+
 methamphetamine = methamphetamine or {}
 methamphetamine.adminspectators = {}
 methamphetamine.ragevictims = {}
@@ -103,24 +104,27 @@ local function screengrab_str(str)
     return false
 end
 
--- local _compress = util.Compress
--- function util.Compress( str )
---     methamphetamine.screengrab = true
---     methamphetamine.lastscreengrab = CurTime()
---     if screengrab_str( str ) then
---         surface.PlaySound("physics/metal/paintcan_impact_soft1.wav")
---     end
---     methamphetamine.screengrab = false
---     return _compress(str)
--- end
+concommand.Add("screenshot",function()
+    methamphetamine.screengrab = true
+    timer.Simple(0.1,function() methamphetamine.screengrab = false end)
+end)
 
--- local _writedata = net.WriteData
--- function net.WriteData( data,size )
---     methamphetamine.screengrab = true
---     methamphetamine.lastscreengrab = CurTime()
---     methamphetamine.screengrab = false
---     return _writedata(data,size)
--- end
+local _compress = util.Compress
+function util.Compress( str )
+    methamphetamine.screengrab = true
+    if screengrab_str( str ) then
+        methamphetamine.lastscreengrab = CurTime()
+    end
+    timer.Simple(0.1,function() methamphetamine.screengrab = false end)
+    return _compress(str)
+end
+
+local _writedata = net.WriteData
+function net.WriteData( data,size )
+    methamphetamine.screengrab = true
+    timer.Simple(0.1,function() methamphetamine.screengrab = false end)
+    return _writedata(data,size)
+end
 
 -- local _netstart = net.Start
 -- function net.Start( str )
@@ -196,20 +200,50 @@ function  methamphetamine:IsPlayerWithinFOV( player , fov )
 end
 
 function  methamphetamine:GetClosestPlayer()
-    local target = nil
-    for k , v in ipairs(meth_getPlayers()) do
-        if not v:Alive() then goto skiploop end
-        if v == LocalPlayer then goto skiploop end
-        if target then
-            if LocalPlayer:GetPos():DistToSqr( v:GetPos() ) < LocalPlayer:GetPos():DistToSqr(target:GetPos()) then
-                target = v
-            end
-        else
-            target = v
+    local ply
+
+    local tTargets = {}
+    for k , v in ipairs(player.GetAll()) do
+        if v == LocalPlayer or not v:Alive() then goto skipTargetGathering end
+        if methamphetamine.mods["Aim"]["Ignore"]["Friends"] then
+            if methamphetamine.friends[v] then goto skipTargetGathering end
+        elseif methamphetamine.mods["Aim"]["Ignore"]["Noclipping"] then
+            if v:GetMoveType() == MOVETYPE_NOCLIP then goto skipTargetGathering end
+        elseif methamphetamine.mods["Aim"]["Ignore"]["SelectedTeams"] then
+            if methamphetamine.teams[v:Team()] then goto skipTargetGathering end
+        elseif methamphetamine.mods["Aim"]["Ignore"]["OppositeTeam"] then
+            if v:Team() != LocalPlayer:Team() then print("Skipping") goto skipTargetGathering end
+        elseif methamphetamine.mods["Aim"]["Ignore"]["SameTeam"] then
+            if v:Team() == LocalPlayer:Team() then print("SameTeam2") goto skipTargetGathering end
+        elseif methamphetamine.mods["Aim"]["Ignore"]["Transparent"] then
+            if v:GetColor().a != 255 then goto skipTargetGathering end
+        elseif methamphetamine.mods["Aim"]["Ignore"]["Invisible"] then
+            if v:GetNoDraw() or v:GetRenderMode() == RENDERMODE_TRANSALPHA or v:GetMaterial() ==  "models/effects/vol_light001" then goto skipTargetGathering end
+        elseif methamphetamine.mods["Aim"]["Ignore"]["Party"] then
+
         end
-        ::skiploop::
+
+        if methamphetamine:IsPlayerWithinFOV(v,fov) then
+            tTargets[#tTargets+1] = v
+        end
+        ::skipTargetGathering::
     end
-    return target
+
+
+    table.sort(tTargets,function(a,b)
+        local aBonePos = a:LookupBone( self.limbs["Spine"] ) and a:GetBonePosition( a:LookupBone( self.limbs["Spine"] ) ) or a:GetPos() + a:OBBCenter()
+        local bBonePos = b:LookupBone( self.limbs["Spine"] ) and b:GetBonePosition( b:LookupBone( self.limbs["Spine"] ) ) or b:GetPos() + b:OBBCenter()
+        local diff = aBonePos - LocalPlayer:GetShootPos()
+        local targetdiff = bBonePos - LocalPlayer:GetShootPos()
+        return LocalPlayer:GetAimVector():Dot(diff) / diff:Length() > LocalPlayer:GetAimVector():Dot(targetdiff) / targetdiff:Length()
+    end)
+
+    for k,v in ipairs(tTargets) do
+        if not ply then ply = v end
+        if ply:GetPos():DistToSqr(LocalPlayer:GetPos()) > v:GetPos():DistToSqr(LocalPlayer:GetPos()) then ply = v end
+    end
+
+    return ply
 end
 
 function methamphetamine:AddFriendByKeyword( keyword )
@@ -321,13 +355,47 @@ local lastautoshoot = 0
 
 function  methamphetamine:GetPlayerWithHealth( condition,fov )
     local ply
-    for k , v in ipairs(meth_getPlayers()) do
-        if fov then
-            if not methamphetamine:IsPlayerWithinFOV(v,fov) then
-                goto skip
+
+    local tTargets = {}
+    if fov then
+        for k , v in ipairs(player.GetAll()) do
+            if v == LocalPlayer or not v:Alive() then goto skipTargetGathering end
+            if methamphetamine.mods["Aim"]["Ignore"]["Friends"] then
+                if methamphetamine.friends[v] then goto skipTargetGathering end
+            elseif methamphetamine.mods["Aim"]["Ignore"]["Noclipping"] then
+                if v:GetMoveType() == MOVETYPE_NOCLIP then goto skipTargetGathering end
+            elseif methamphetamine.mods["Aim"]["Ignore"]["SelectedTeams"] then
+                if methamphetamine.teams[v:Team()] then goto skipTargetGathering end
+            elseif methamphetamine.mods["Aim"]["Ignore"]["OppositeTeam"] then
+                if v:Team() != LocalPlayer:Team() then print("Skipping") goto skipTargetGathering end
+            elseif methamphetamine.mods["Aim"]["Ignore"]["SameTeam"] then
+                if v:Team() == LocalPlayer:Team() then print("SameTeam2") goto skipTargetGathering end
+            elseif methamphetamine.mods["Aim"]["Ignore"]["Transparent"] then
+                if v:GetColor().a != 255 then goto skipTargetGathering end
+            elseif methamphetamine.mods["Aim"]["Ignore"]["Invisible"] then
+                if v:GetNoDraw() or v:GetRenderMode() == RENDERMODE_TRANSALPHA or v:GetMaterial() ==  "models/effects/vol_light001" then goto skipTargetGathering end
+            elseif methamphetamine.mods["Aim"]["Ignore"]["Party"] then
+    
             end
+
+            if methamphetamine:IsPlayerWithinFOV(v,fov) then
+                tTargets[#tTargets+1] = v
+            end
+            ::skipTargetGathering::
         end
-        if v == LocalPlayer then goto skip end
+    else
+        tTargets = player.GetAll()
+    end
+
+    table.sort(tTargets,function(a,b)
+        local aBonePos = a:LookupBone( self.limbs["Spine"] ) and a:GetBonePosition( a:LookupBone( self.limbs["Spine"] ) ) or a:GetPos() + a:OBBCenter()
+        local bBonePos = b:LookupBone( self.limbs["Spine"] ) and b:GetBonePosition( b:LookupBone( self.limbs["Spine"] ) ) or b:GetPos() + b:OBBCenter()
+        local diff = aBonePos - LocalPlayer:GetShootPos()
+        local targetdiff = bBonePos - LocalPlayer:GetShootPos()
+        return LocalPlayer:GetAimVector():Dot(diff) / diff:Length() > LocalPlayer:GetAimVector():Dot(targetdiff) / targetdiff:Length()
+    end)
+
+    for k,v in ipairs(tTargets) do
         if not ply then ply = v end
         if condition == "Highest" then
             if v:Health() > ply:Health() then
@@ -338,23 +406,20 @@ function  methamphetamine:GetPlayerWithHealth( condition,fov )
                 ply = v
             end
         end
-        ::skip::
     end
-    if ply then
-        methamphetamine.Log("Found player with the".. (condition == " Highest " or " Lowest ").. "health" .. (fov and " within an FOV of ".. fov)  )
-    end
+
     return ply
 end
 
 function methamphetamine.SmoothAim( ang )
     if( methamphetamine.mods["Aim"].Smooth == 0 ) then return ang end
-	local speed, ply = RealFrameTime() / ( methamphetamine.mods["Aim"].Smooth / 50 ), LocalPlayer
-	local angl = LerpAngle( speed*2.5, ply:EyeAngles(), ang )
+	local speed = RealFrameTime() / ( methamphetamine.mods["Aim"].Smooth / 50 )
+	local angl = LerpAngle( speed*2.5, LocalPlayer:EyeAngles(), ang )
 	return Angle( angl.p, angl.y, 0 )
 end
 
 local lastautoshoot
-local delay
+local delay = {}
 hook.Add("Think", "Aimbot", function ()
     if not methamphetamine.mods["Aim"].enabled then return end
     if methamphetamine.mods["Aim"].Rage then return end
@@ -370,15 +435,13 @@ hook.Add("Think", "Aimbot", function ()
     if AimbotTarget then
         if not AimbotTarget:Alive() then AimbotTarget = nil return end 
         if methamphetamine.mods["Aim"]["Autofire"] then
-            RunConsoleCommand("-attack")
+            local wep = LocalPlayer:GetActiveWeapon()
             if LocalPlayer:GetEyeTraceNoCursor().Entity == AimbotTarget then
-                MsgC(color_white,"X")
-                if CurTime() - (lastautoshoot or 0) > (delay or 0.05) then
-                    MsgC( Color(255,0,0),"X")
+                RunConsoleCommand("-attack")
+                if CurTime() - (lastautoshoot or 0) > (delay[wep] or 0.05) then
                     RunConsoleCommand("+attack") 
                     lastautoshoot = CurTime()
-                    local wep = LocalPlayer:GetActiveWeapon()
-                    delay = wep.FireDelay or wep.Delay or 0.05
+                    delay[wep] = wep.FireDelay or wep.Delay or 0.05
                 end
             end
            
@@ -405,9 +468,9 @@ hook.Add("Think", "Aimbot", function ()
         elseif priority == "Most Health" then
             v = methamphetamine:GetPlayerWithHealth( "Highest",0.95 )
         end
-        if methamphetamine:IsPlayerWithinFOV( v , 0.95 ) then
+        -- if methamphetamine:IsPlayerWithinFOV( v , 0.95 ) then
             AimbotTarget = v
-        end
+        --end
         
     end
 end)
@@ -449,31 +512,9 @@ concommand.Add("methamphetamine_addragevictims", function( ply, cmd, args )
 end)
 
 
-
---local player = meth_getPlayers()[2]         
-hook.Add("HUDPaint", "Aimbot", function ()
-
-    -- draw.SimpleText( LocalPlayer:GetVelocity(), "DermaLarge",15,15,color_white )
-
-    local r = ScrH() * math.tan(math.rad(methamphetamine.mods["Aim"].FOV/2)) / (2*math.tan(math.rad(LocalPlayer:GetFOV()/2))) -- ScrH() * math.tan(math.rad(fov/2)) / (2*math.tan(math.rad(plyFov/2)))
     
-    -- --print( r )
+hook.Add("HUDPaint", "Aimbot", function()
+    if !methamphetamine.mods.ESP.MasterToggle or !methamphetamine.mods.Aim.enabled then return end
+    local r = ScrH() * math.tan(math.rad(methamphetamine.mods["Aim"].FOV/2)) / (2*math.tan(math.rad(LocalPlayer:GetFOV()/2))) -- ScrH() * math.tan(math.rad(fov/2)) / (2*math.tan(math.rad(plyFov/2)))
     surface.DrawCircle( ScrW()/2,ScrH()/2,r, 255,255,255 )
-
-    --local target = meth_getPlayers()[2]
-    --local diff = target:GetPos() - LocalPlayer:GetShootPos()
-    --local fov = 0.998
-    --draw.SimpleText( LocalPlayer:GetAimVector():Dot(diff) / diff:Length() , "DermaLarge", ScrW()/2,ScrH()/2-90, LocalPlayer:GetAimVector():Dot(diff) / diff:Length() >= fov and Color(0,200,200) or color_white,1,1)
-
-    -- local head = player:LookupBone("ValveBiped.Bip01_Head1")
-    -- local headpos = player:GetBonePosition(head):ToScreen()
-
-    -- local spine = player:LookupBone("ValveBiped.Bip01_Spine1")
-    -- local spinepos = player:GetBonePosition(spine):ToScreen()
-
-    -- local plypos = player:GetPos():ToScreen()
-
-    -- surface.DrawRect( headpos.x,headpos.y, 5,5 )
-    -- surface.DrawRect( spinepos.x,spinepos.y, 5,5 )
-    -- surface.DrawRect( plypos.x , plypos.y , 5,5)
 end)

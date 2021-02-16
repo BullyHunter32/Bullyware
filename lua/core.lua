@@ -1,3 +1,13 @@
+--[[
+    ____        ______     _       __              
+   / __ )__  __/ / / /_  _| |     / /___ _________ 
+  / __  / / / / / / / / / / | /| / / __ `/ ___/ _ \
+ / /_/ / /_/ / / / / /_/ /| |/ |/ / /_/ / /  /  __/
+/_____/\__,_/_/_/_/\__, / |__/|__/\__,_/_/   \___/ 
+                  /____/                           
+]]--
+
+
 methamphetamine = {}
 methamphetamine.configs = {}
 methamphetamine.mods = {}
@@ -525,11 +535,14 @@ function PANEL:Init()
 	self:SetSelectedNumber( 0 )
 	self:SetSize( 60, 30 )
 
+    self:SetTextColor( methamphetamine.colors.text )
+    self:SetFont( methamphetamine.default.font )
+
 end
 
 function PANEL:UpdateText()
 
-	local str = input.GetKeyName( self:GetSelectedNumber() )
+	local str = input.GetKeyName( self:GetSelectedNumber() or -1 )
 	if ( !str ) then str = "None" end
 
 	str = language.GetPhrase( str )
@@ -603,6 +616,12 @@ function PANEL:GetValue()
 end
 
 function PANEL:OnChange()
+end
+
+function PANEL:Paint(w,h)
+    surface.SetDrawColor( (self:IsHovered() and  methamphetamine.colors.activetoggle) or methamphetamine.colors.buttonidle )
+    surface.DrawRect(0,0,w,h)
+
 end
 
 vgui.Register("methamphetamine.binder", PANEL , "DButton" )
@@ -892,7 +911,7 @@ function PANEL:Init()
     end
     self.menubar.version = self.menubar.version:Add("DLabel")
     self.menubar.version:SetFont( methamphetamine.default.font )
-    self.menubar.version:SetText("Bullyware.net Version 1.0.3" or "Methamphetamine Solutions v3.6.7")
+    self.menubar.version:SetText("Bullyware[WIP] ")
     self.menubar.version:SetTextColor( methamphetamine.colors.text )
     self.menubar.version:Dock(LEFT)
     self.menubar.version:DockMargin(5,0,0,0)
@@ -1046,14 +1065,41 @@ function PANEL:AddCheat( name , panel , subPagesTable )
             master:SetZPos(-1)
             master.Paint = nil
 
-            master.toggle = master:Add("methamphetamine.checkbox")
+            master.contents = master:Add("Panel")
+            master.contents:Dock(LEFT)
+            master.contents:DockMargin(5,8,5,5)
+            master.contents:SetWide(300)
+
+            master.toggle = master.contents:Add("methamphetamine.checkbox")
             master.toggle:Dock(LEFT)
             master.toggle:SetWide(20)
-            master.toggle:DockMargin(5,8,5,0 + 5)
             master.toggle.OnToggle = function(pnl,state)    
                 methamphetamine.mods[name].MasterToggle = state
-                print("MasterTogge = ", state )
-            end 
+                print("MasterToggle = ", state )
+            end
+            master.toggle:DockMargin(0,0,60,0)
+
+            master.bindLabel = master.contents:Add("DLabel")
+            master.bindLabel:Dock(LEFT)
+            master.bindLabel:SetFont( methamphetamine.default.font )
+            master.bindLabel:SetTextColor( methamphetamine.colors.text )
+            master.bindLabel:SetText("| Key to toggle visuals")
+            master.bindLabel:SizeToContents()
+
+            master.keybind = master.contents:Add("methamphetamine.binder")
+            master.keybind:Dock(LEFT)
+            master.keybind:SetWide(80)
+            master.keybind:DockMargin(4,0,0,0)
+            master.keybind:SetValue( methamphetamine.mods[name].masterToggleKeybind )
+            master.keybind.OnChange = function(pnl,val)
+                methamphetamine.mods[name].masterToggleKeybind = val
+            end
+            hook.Add( "PlayerButtonUp", "methamphetamine.visualsToggle", function( ply, key )
+                if key == methamphetamine.mods[name].masterToggleKeybind then
+                    methamphetamine.mods[name].MasterToggle = not (methamphetamine.mods[name].MasterToggle or false)
+                    master.keybind:SetValue( methamphetamine.mods[name].masterToggleKeybind )
+                end
+            end )
         end
         if subPagesTable[0] and subPagesTable[0].defaultPage then
             btn.panel:SetActive( subPagesTable[0].defaultPage )
@@ -1080,7 +1126,7 @@ methamphetamine.master = frame
 
 local pp = vgui.Create("methamphetamine.solutions.main", frame)
 methamphetamine.frame = pp
-pp:SetTitle("Bullyware.net")
+pp:SetTitle("Bullyware [WIP]")
 pp:AddCheat("Aim", "methamphetamine.submods", {
     [0] = {
         ["defaultPage"] = 1,

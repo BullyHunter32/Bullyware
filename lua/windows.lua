@@ -1,12 +1,3 @@
---[[
-    ____        ______     _       __              
-   / __ )__  __/ / / /_  _| |     / /___ _________ 
-  / __  / / / / / / / / / / | /| / / __ `/ ___/ _ \
- / /_/ / /_/ / / / / /_/ /| |/ |/ / /_/ / /  /  __/
-/_____/\__,_/_/_/_/\__, / |__/|__/\__,_/_/   \___/ 
-                  /____/                           
-]]--
-
 local mods = {
     [0]  = {}
 }
@@ -645,7 +636,7 @@ function PANEL:AddLine( id,name,shown,underline )
         line.addteam:SetPos( 550/2+3 + 1,1  )
         line.addteam:SetLabel("")
         line.addteam:SetSize( 20-2,20-2 ) 
-        line.addteam:SetState( methamphetamine.mods["Aim"].Teams[id] or false )
+        line.addteam:SetState( methamphetamine.mods["Aim"].Teams[name] or false )
         line.addteam.OnToggle = function(pnl,state)   
             methamphetamine.mods["Aim"].Teams[id] = (state or false)
         end
@@ -680,7 +671,6 @@ end)
 
 
 mods:Add("Debug Console", function (mod,toggle)
-
     if not toggle then 
         mod.panel:Remove()
         return
@@ -745,6 +735,392 @@ end)
 
 mods:Add("Force close", function(mod,toggle)
     methamphetamine.master:SetVisible(false)
+end)
+
+
+local PANEL = {}
+
+function PANEL:Init()  
+    methamphetamine.master:SetVisible(false)
+    self:SetSize(300,400)
+    self:MakePopup()
+    self.bar.closeButton = self.bar:Add("DButton")
+    self.bar.closeButton:Dock(RIGHT)
+    self.bar.closeButton:SetWide(20)
+    self.bar.closeButton:SetText("")
+    self.bar.closeButton.Paint = function(pnl,w,h)
+        draw.SimpleText("X",methamphetamine.default.font,w/2,h/2,methamphetamine.colors.disabledtext,1,1)
+    end
+    self.bar.closeButton.DoClick = function()
+        self:Remove()
+    end 
+
+    self.bar.minimise = self.bar:Add("DButton")
+    self.bar.minimise:Dock(RIGHT)
+    self.bar.minimise:SetWide(20)
+    self.bar.minimise:SetText("")
+    self.bar.minimise.Paint = function(pnl,w,h)
+        surface.SetDrawColor(methamphetamine.colors.disabledtext)
+        surface.DrawLine(w*0.3,h*0.8,w*0.7,h*0.8)
+    end
+    self.bar.minimise.DoClick = function()
+        self:SetVisible(false)
+    end 
+
+    self.exploits = self:Add("Panel")
+    self.exploits:Dock(LEFT)
+    self.exploits.List = self.exploits:Add("DScrollPanel")
+    self.exploits.List:Dock(TOP)
+    self.exploits.pages = {}
+    self._exploits = {}
+    self:Initialize()
+    self:SetActivePage(1)
+    self.exploits.List:SetTall(#self.exploits.pages*20)
+end
+
+function PANEL:SetActivePage(iPage)
+    self.exploits.active = self.exploits.pages[iPage]
+    self.exploits.active.page:SetVisible(true)
+end
+
+function PANEL:AddExploit(name, data)
+    self._exploits[name] = data
+    self.exploits.pages[#self.exploits.pages+1] = self.exploits.List:Add("DButton")
+    local exploit = self.exploits.pages[#self.exploits.pages]
+    exploit:Dock(TOP)
+    exploit:SetTall(20)
+    exploit:SetText(name)
+    exploit:SetFont( methamphetamine.default.font )
+    exploit:SetTextColor( methamphetamine.colors.text )
+    exploit.canExecute = data.requirements()
+    exploit.Paint = function(pnl,w,h)
+        surface.SetDrawColor( pnl:IsHovered() and methamphetamine.colors.border or methamphetamine.colors.hovered)
+        surface.DrawRect(0,0,w,h)
+    end
+    if not exploit.canExecute then
+        exploit:MethToolTip("This exploit can not be used on this server.")
+    end
+
+    exploit.DoClick = function(pnl)
+        if IsValid(self.exploits.active) then
+            self.exploits.active.page:SetVisible(false)
+        end
+        pnl.page:SetVisible(true)
+        self.exploits.active = pnl
+    end
+    
+    exploit.page = self:Add("methamphetamine.panel")
+    exploit.page:Dock(FILL)
+    exploit.page.Header = exploit.page:Add("Panel")
+    exploit.page.Header:Dock(TOP)
+    exploit.page.Header:SetTall(30)
+    exploit.page.Header.Paint = function(pnl,w,h)
+        draw.SimpleText(data.name, methamphetamine.default.font,w/2,h/2,methamphetamine.colors.text,1,1)
+        surface.SetDrawColor(methamphetamine.colors.text)
+        surface.DrawRect(w*0.2,h*0.8,w*0.6,1)
+    end
+    exploit.page.args = {}
+    exploit.attackArgs = {}
+
+    if data.desc then
+        exploit.page.desc = exploit.page:Add("Panel")
+        local desc = exploit.page.desc
+        desc:Dock(TOP)
+        desc:SetTall(30)
+        desc:DockMargin(4,0,4,0)
+        local label = desc:Add("DLabel")
+        label:Dock(FILL)
+        label:SetWrap(true)
+        label:SetFont(methamphetamine.default.font)
+        label:SetTextColor(methamphetamine.colors.text)
+        label:SetText(data.desc)
+        label:SizeToContents()
+    end
+
+    for k,v in ipairs(data.args) do
+        exploit.attackArgs[k] = v.default
+        if v.type == "text" then
+            local base = exploit.page:Add("EditablePanel")
+            base:Dock(TOP)
+            base:DockMargin(8,4,8,4)
+            base:SetTall(35)
+            base.Paint = function(pnl,w,h)
+                draw.SimpleText(v.name, methamphetamine.default.font,5,5,methamphetamine.colors.text,0,1)
+            end
+            exploit.page.args[k] = base:Add("methamphetamine.search")
+            local argBox = exploit.page.args[k]
+            argBox:Dock(BOTTOM)
+            argBox:SetTall(20)
+            argBox.OnEnter = function(pnl,text)
+                exploit.attackArgs[k] = text
+            end
+            argBox:SetValue(v.default)
+        elseif v.type == "number"then
+            local base = exploit.page:Add("EditablePanel")
+            base:Dock(TOP)
+            base:DockMargin(8,4,8,4)
+            base:SetTall(35)
+            base.Paint = function(pnl,w,h)
+                draw.SimpleText(v.name, methamphetamine.default.font,5,5,methamphetamine.colors.text,0,1)
+            end
+            exploit.page.args[k] = base:Add("methamphetamine.slider")
+            local argBox = exploit.page.args[k]
+            argBox:SetMin(v.min)
+            argBox:SetMax(v.max)
+            argBox:SetValue(v.default)
+            argBox:Dock(BOTTOM)
+            argBox:SetTall(20)
+            argBox:SetValue( v.default/v.max )
+            argBox.OnValueChanged = function(pnl,val)
+                exploit.attackArgs[k] = val*pnl:GetMax()
+            end
+        elseif v.type == "bool" then
+            local base = exploit.page:Add("EditablePanel")
+            base:Dock(TOP)
+            base:DockMargin(8,4,8,4)
+            base:SetTall(20)
+            base.Paint = nil
+            exploit.page.args[k] = base:Add("methamphetamine.checkbox")
+            local argBox = exploit.page.args[k]
+            argBox:SetState(v.default)
+            argBox:Dock(LEFT)
+            argBox:SetWide(20)
+            argBox.OnToggle = function(pnl,val)
+                exploit.attackArgs[k] = val
+            end
+            argBox:SetLabel(v.name)
+        end
+    end
+
+    local attack = exploit.page:Add("DButton")
+    attack:SetText("Execute")
+    attack:SetFont( methamphetamine.default.font )
+    attack:SetTextColor( methamphetamine.colors.text )
+    attack.Paint = function(pnl,w,h)
+        surface.SetDrawColor(pnl:IsHovered() and methamphetamine.colors.border or methamphetamine.colors.hovered)
+        surface.DrawRect(0,0,w,h)
+    end
+    if not exploit.canExecute then
+        attack:MethToolTip("This exploit can not be used on this server.")
+    end
+    attack.DoClick = function(pnl)
+        if not exploit.canExecute then return end
+        self._exploits[name].active = not self._exploits[name].active
+        if self._exploits[name].active and self._exploits[name].toggle then
+            attack:SetText("Abort")
+        else
+            attack:SetText("Execute")
+        end
+        local executeData = {name = name,args={},canExecute=exploit.canExecute,active = self._exploits[name].active}
+        for k,v in ipairs(data.args) do
+            executeData.args[k] = exploit.attackArgs[k]
+        end
+        self._exploits[name].onExecute(executeData)
+    end
+ 
+    exploit.page.PerformLayout = function(pnl,w,h)
+        attack:SetPos( w/2-60, (#exploit.page.args * 35) + 80 )
+        attack:SetSize(120,20)
+    end
+    exploit.page:SetVisible(false)
+end
+
+methamphetamine.exploits = include("exploits.lua")
+function PANEL:Initialize()
+    self.exploits.List:Clear()
+    for k,v in ipairs( methamphetamine.exploits ) do
+        self:AddExploit(v.name, v)
+    end
+end
+
+function PANEL:PerformLayout(w,h)
+    self.exploits:SetWide(w*0.4)
+end
+
+vgui.Register("methamphetamine.windows.exp_lo1ts",PANEL,"methamphetamine.frame") -- just in case a server decides to look for 'exploits' within vgui.Register/Create
+
+
+mods:Add("Exploit menu", function(mod,toggle)
+    if not toggle then 
+        mod.panel:Remove()
+        return
+    end
+    mod.panel = vgui.Create("methamphetamine.windows.exp_lo1ts")
+    mod.panel:SetSize(550,480)
+    mod.panel:Center()
+    mod.panel:SetTitle("Exploit menu")
+end)
+
+local PANEL = {}
+
+function PANEL:Init()
+    self.list = self:Add("DScrollPanel")
+    local vbar = self.list:GetVBar()
+    vbar:SetHideButtons( true )
+    vbar.Paint = function(pnl,w,h)
+        draw.RoundedBox(4,0,0,w,h,methamphetamine.colors.gripbackground)
+    end
+    vbar.btnGrip.Paint = function(pnl,w,h)
+        draw.RoundedBox(4,0,0,w,h,methamphetamine.colors.grip)
+    end
+    vbar:SetWide(4)
+    vbar:DockMargin(0,2,2,2)
+    self.list:Dock(FILL)
+    self:AddLine("Name",true)
+    for name, bool in SortedPairs(methamphetamine.cachedNetMessages) do
+        self:AddLine( name ) 
+    end
+
+end
+
+
+function PANEL:AddLine( name,underline )
+    local line = self.list:Add("DPanel")
+    line:Dock(TOP)
+    line:SetTall(20)
+    line:DockMargin(0,0,0,0)
+    line.Paint = function(pnl,w,h)
+        surface.SetDrawColor( methamphetamine.colors.activebutton )
+        if underline then
+            surface.DrawRect(0,h-1,w,1)
+            draw.SimpleText("Name", methamphetamine.default.font , 8 , h/2 , methamphetamine.colors.text ,0,1)
+        end
+        surface.DrawRect((550/2),0,1,h)
+
+    end
+
+    line.name = line:Add("DButton")
+    line.name:Dock(LEFT)
+    line.name:SetText("")
+    line.name:SetWide( (550/2) )
+    line.name.Paint = function(pnl,w,h)
+        surface.SetDrawColor( pnl:IsHovered() and methamphetamine.colors.activebutton or color_transparent )
+        surface.DrawRect(0,0,w,h)
+        surface.SetDrawColor( methamphetamine.colors.activebutton )
+        -- surface.DrawRect(w-1,0,1,h)
+        draw.SimpleText( name, methamphetamine.default.font, 8,h/2, methamphetamine.colors.text,0,1 )
+    end
+
+end
+
+vgui.Register("methamphetamine.windows.netmessages",PANEL,"methamphetamine.frame")
+
+
+local PANEL = {}
+
+function PANEL:Init()
+
+end
+
+vgui.Register("methamphetamine.windows.netmessagelistener",PANEL,"methamphetamine.frame")
+
+
+mods:Add("Net Message List", function(mod,toggle)
+    if not toggle then 
+        mod.panel:SetVisible(false)
+        return
+    end
+    if IsValid(mod.panel) then
+        mod.panel:SetVisible(true)
+        return
+    end
+    mod.panel = vgui.Create("methamphetamine.windows.netmessages")
+    mod.panel:SetSize(550,480)
+    mod.panel:Center()
+    mod.panel:SetTitle("Net Message List")
+end)
+
+
+__detouredNetMessages = __detouredNetMessages or false
+local netReceive = net.Receive
+local netWriteString = net.WriteString
+local netWriteInt = net.WriteInt
+local netWriteEntity = net.WriteEntity
+local netWriteUInt = net.WriteUInt
+local netStart = net.Start
+local netSendToServer = net.SendToServer
+
+local HIDE_MESSAGES = {}
+
+concommand.Add("__hide_net_msg",function(ply,cmd,args)
+    HIDE_MESSAGES[args[1]] = true
+end)
+
+if not __detouredNetMessages then
+    net.Receive = function(msg,callback)
+        hook.Run("methamphetamine.NetListener","Receive",msg)
+        return netReceive(msg,callback)
+    end
+    net.Start = function(msg,unreliable)
+        if not HIDE_MESSAGES[msg] then
+            hook.Run("methamphetamine.NetListener","Start",msg)
+        end
+        return netStart(msg,unreliable)
+    end
+    net.WriteString = function(msg)
+        hook.Run("methamphetamine.NetListener","WriteString",msg)
+        return netWriteString(msg)
+    end
+    net.WriteEntity = function(msg)
+        hook.Run("methamphetamine.NetListener","WriteEntity",tostring(msg))
+        return netWriteEntity(msg,callback)
+    end
+    net.WriteInt = function(msg,bit)
+        hook.Run("methamphetamine.NetListener","WriteInt",msg .. ":" .. bit)
+        return netWriteInt(msg,bit)
+    end
+    net.WriteUInt = function(msg,bit)
+        hook.Run("methamphetamine.NetListener","WriteUInt",msg .. ":" .. bit)
+        return netWriteUInt(msg,bit)
+    end
+    net.SendToServer = function()
+        hook.Run("methamphetamine.NetListener","SendToServer","")
+        return netSendToServer()
+    end
+end
+
+mods:Add("NetMsg Listener", function(mod,toggle)
+    if not toggle then 
+        mod.panel:SetVisible(false)
+        return
+    end
+    if IsValid(mod.panel) then
+        mod.panel:SetVisible(true)
+        return
+    end
+    mod.panel = vgui.Create("methamphetamine.windows.netmessagelistener")
+    mod.panel:SetSize(550,300)
+    mod.panel:Center()
+    mod.panel:SetTitle("Net Message List")
+    mod.panel.scroll = mod.panel:Add("DScrollPanel")
+    mod.panel.scroll:Dock(FILL)
+    mod.panel.scroll:DockMargin(4,4,4,4)
+    local vbar = mod.panel.scroll:GetVBar()
+    function vbar:Paint(w, h)
+        draw.RoundedBox(4, 0, 0, w, h, methamphetamine.colors.grip )
+    end
+    function vbar.btnGrip:Paint(w, h)
+        draw.RoundedBox(4, 0, 0, w, h, methamphetamine.colors.gripbackground)
+    end
+    vbar:SetWide(4)
+    vbar:SetHideButtons(true)
+
+    local id = 0
+    hook.Add("methamphetamine.NetListener","DermaShit",function(type,data)
+        if not IsValid(mod.panel) then hook.Remove("methamphetamine.NetListener","DermaShit") return end
+        local panel = mod.panel.scroll:Add("Panel")
+        panel:Dock(TOP)
+        panel:SetZPos(6)
+        local time = os.time()
+        panel.markup = markup.Parse( "<colour=179,179,179,255><font=".. methamphetamine.default.font..">".. "["..os.date("%X",time).."]".."["..type.."] ".. data .. "</font></colour>", mod.panel:GetWide() - 12  )
+        panel:SetTall( panel.markup:GetHeight() + 8 )
+        panel.Paint = function (pnl,w,h)
+            surface.SetDrawColor( id % 2 == 0 and methamphetamine.colors.gripbackground or methamphetamine.colors.menubar )
+            surface.DrawRect(0,0,w,h)
+            pnl.markup:Draw(4,4)
+        end
+        id = id + 1
+    end)
 end)
 
 return mods

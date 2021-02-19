@@ -1034,6 +1034,10 @@ end
 
 vgui.Register("methamphetamine.esp.player",PANEL)
 
+if not file.Exists("methamphetamine/configs","DATA") then
+    file.CreateDir("methamphetamine/configs")
+end
+
 local PANEL = {}
 
 function PANEL:Init()    

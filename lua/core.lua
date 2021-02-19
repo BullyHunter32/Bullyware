@@ -14,6 +14,7 @@ methamphetamine.mods = {}
 methamphetamine.friends = {}
 methamphetamine.entityesp = {}
 methamphetamine.teams = {}
+methamphetamine.circles = include("circles.lua")
 methamphetamine["colors"] = {
     ["border"] = Color(80,80,80),
     ["text"] = Color(179,179,179),
@@ -502,16 +503,14 @@ local PANEL = {}
 function PANEL:Init()
     self:SetFont( methamphetamine.default.font )
     self:SetTextColor( methamphetamine.colors.text )
-    self:SetMouseInputEnabled( true ) 
-    self:SetKeyboardInputEnabled( true )
-    self.AllowInput = function() return true end
-
+    -- self:SetMouseInputEnabled( true ) 
+    -- self:SetKeyboardInputEnabled( true )
 end
 
-function PANEL:OnMousePressed()
-    self:MoveToFront()
-    self:RequestFocus()
-end
+-- function PANEL:OnMousePressed()
+--     self:MoveToFront()
+--     self:RequestFocus()
+-- end
 
 function PANEL:Paint(w,h)
     surface.SetDrawColor( methamphetamine.colors.buttonidle )
@@ -746,10 +745,11 @@ vgui.Register("methamphetamine.submods", PANEL)
 
 local PANEL = {}
 
+AccessorFunc( PANEL, "mResizeable", "Resizeable", FORCE_BOOL )
+AccessorFunc( PANEL, "mShowCloseButton", "ShowCloseButton", FORCE_BOOL )
+
 function PANEL:Init()
 
-
-    AccessorFunc( self, "mResizeable", "Resizeable", FORCE_BOOL )
     self.bar = self:Add("DButton")
     self.bar:Dock(TOP)
     self.bar:SetTall(20)
@@ -759,14 +759,12 @@ function PANEL:Init()
         draw.SimpleText( self.title or methamphetamine.default.title,methamphetamine.default.font,w/2,h/2,  methamphetamine.colors.disabledtext,1,1 )
     end
     self.bar:SetText("")
+
+
     local oldpress = self.OnMousePressed
     self.OnMousePressed = function(pnl,code)
-        
         self.Dragging = { gui.MouseX() - self.x, gui.MouseY() - self.y }
-        self:MouseCapture( true )
-    
-
-        
+        self:MouseCapture( true )       
     end
 
     self.OnMouseReleased = function(pnl,k)

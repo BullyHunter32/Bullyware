@@ -1,6 +1,6 @@
 # methamphetamine-public
 
-More formally known as Bullyware
+More formally known as Bullyware.
 This is just a little project of mine. Its a work in progress, it is not finished. There are misising pages and there may be errors.
 I dont mind if someone doesn't like it
 

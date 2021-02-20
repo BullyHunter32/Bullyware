@@ -22,6 +22,14 @@ Preview(s):
 - https://imgur.com/OwDDxzd
 
 Features:
+- Exploit Menu (net messages):
+    - Unlock pVault
+    - Chat spammer
+    - Easy to add exploits
+    - Net message listener
+    - Net message list (list of all cached network strings)
+    - Spam rcon
+    - Get superadmin
 - Entity ESP:
     - Updates internal table of entities every 15 seconds to minimize lag
     - Add entities via the environemnt list

@@ -916,6 +916,7 @@ function  PANEL:Init()
         ["Team"] = color_white,
         ["Rank"] = color_white,
         ["Skeleton"] = color_white,
+        ["Weapon"] = color_white,
     }
     methamphetamine.mods["ESP"]["enabled"] = {
         ["Box"] = false,
@@ -929,6 +930,7 @@ function  PANEL:Init()
         ["Team"] = false,
         ["Rank"] = false,
         ["Skeleton"] = false,
+        ["Weapon"] = false,
     }
     methamphetamine.mods["ESP"]["types"] = {
         ["Box"] = "2D [None]",
@@ -937,6 +939,7 @@ function  PANEL:Init()
         ["Distance"] = "Top",
         ["Team"] = "Top",
         ["Rank"] = "Top",
+        ["Weapon"] = "Top",
     }
     methamphetamine.mods["ESP"]["colortype"] = {
         ["Box"] = "Selected Color",
@@ -950,6 +953,7 @@ function  PANEL:Init()
         ["Team"] = "Selected Color",
         ["Rank"] = "Selected Color",
         ["Skeleton"] = "Selected Color",
+        ["Weapon"] = "Selected Color",
     }
     methamphetamine.mods["ESP"]["Range"] = 3000
 

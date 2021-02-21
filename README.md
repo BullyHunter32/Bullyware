@@ -13,10 +13,6 @@ Instructions:
     - https://fonts.google.com/specimen/Raleway?preview.text_type=custom
 
 
-Created a discord server today for reporting bugs and such
-- https://discord.gg/eDdkaC8bKF
-
-
 To use you run `lua_openscript_cl meth/core.lua` in the console.
 Press `0` to open the menu, anticheats may detect you pressing insert. Better safe than sorry :)
 

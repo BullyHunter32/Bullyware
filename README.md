@@ -1,7 +1,7 @@
 # methamphetamine-public
 
 More formally known as Bullyware.
-This is just a little project of mine. Its a work in progress, it is not finished. There are misising pages and there may be errors.
+This is just a little project of mine. Its a work in progress, it is not finished. There are missing pages and there may be errors.
 I dont mind if someone doesn't like it
 
 > Didn't think that i'd have to mention this but this cheat is not meant to be the best cheat in the world. Yes, it is made in Lua and I am very well aware that this is not made in C++. This was a project made for fun, not for commercial purposes. I couldn't give less of a shit if someone has something against this project I had fun making, but if you insist you want to cry about it, be my guest.

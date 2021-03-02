@@ -203,10 +203,6 @@ function panelMetaTable:Configure( ... )
     end)
 end
 
-hook.Remove("methamphetamine.configLoaded","Print",function(mods)
-    timer.Simple(3,function() PrintTable(mods) end)
-end)
-
 
 local PANEL = {}
 
@@ -415,21 +411,17 @@ function PANEL:AddChoice( name , onclick )
 end
 function PANEL:SetValue( int )
     methamphetamine.Log("Setting value using var ".. tostring(int) )
-    print("AYO")
     if type(int) == "string" then
         for k , v in ipairs( self.m_Choices ) do
             if v.name == int then
                 int = v.id
-                print( int , v.id )
                 break
             end
         end
     end
     if not self.m_Choices[int] then
-        print("FAIL")
         return methamphetamine.Log("Attempting to index nil value " )
     end
-    print("SUCCESS ".. self.m_Choices[int].name )
     self:SetText( self.m_Choices[ int ].name )
     self.value = self.m_Choices[int]
 end
@@ -479,10 +471,6 @@ function PANEL:DoClick()
         end
     end
     self.DropDownPanel:SetTall( #self.m_Choices * 20 )
-    --print()
-    --PrintTable( self.m_Choices )
-    --print()
-    --PrintTable( self.value )
 end
 
 function PANEL:HideDiamond( bool )

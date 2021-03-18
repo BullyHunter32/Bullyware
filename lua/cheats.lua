@@ -425,7 +425,7 @@ hook.Add("Think", "Aimbot", function ()
     if not methamphetamine.mods["Aim"].enabled then return end
     if methamphetamine.mods["Aim"].Rage then return end
     if not ( methamphetamine.mods["Aim"].Key ) then return end
-    if not input.IsKeyDown( methamphetamine.mods["Aim"].Key ) or not input.IsMouseDown( methamphetamine.mods["Aim"].Key ) then 
+    if not input.IsKeyDown( methamphetamine.mods["Aim"].Key ) and not input.IsMouseDown( methamphetamine.mods["Aim"].Key ) then 
         AimbotTarget = nil
         return 
     end 

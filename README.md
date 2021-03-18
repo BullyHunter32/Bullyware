@@ -1,4 +1,6 @@
-# methamphetamine-public
+# Bullyware
+
+NOTE: THIS IS NOT THE SOURCE CODE FOR METHAMPHETAMINE SOLUTIONS. I AM NOT AFFILIATED WITH THEM IN ANY WAY SHAPE OR FORM NOR IS THIS STOLEN CODE. THIS USED TO BE A PROJECT OF MINE JUST TO RECREATE METH AS I ADMIRED THEIR INTERFACE AND I WAS INTERESTED IN MAKING A CHEAT SO THERE CAME A METHAMPHETAMINE REMAKE WHICH WAS LATER RENAMED TO 'Bullyware'.
 
 More formally known as Bullyware.
 This is just a little project of mine. Its a work in progress, it is not finished. There are missing pages and there may be errors.

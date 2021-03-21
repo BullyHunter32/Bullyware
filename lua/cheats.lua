@@ -288,18 +288,6 @@ function methamphetamine:RemoveRageVictimByKeyword( keyword )
     end
 end
 
-
--- concommand.Add("methamphetamine_addfriend", function( ply, cmd, args )
---     if not args[1] then return end
---     methamphetamine:AddFriendByKeyword( args[1] )
--- end)
-
--- concommand.Add("methamphetamine_removefriend", function( ply, cmd, args )
---     if not args[1] then return end
---     methamphetamine:RemoveFriendByKeyword( args[1] )
--- end)
-
-
 function  methamphetamine:CalculateCurLimbPos( ply , limb )
     local  bone = ply:LookupBone( self.limbs[limb] )
     local bonepos,ang

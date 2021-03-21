@@ -18,6 +18,9 @@ Instructions:
 To use you run `lua_openscript_cl meth/core.lua` in the console.
 Press `0` to open the menu, anticheats may detect you pressing insert. Better safe than sorry :)
 
+If you are on a server where sv_allowcslua is 0 then you must use a 3rd party lua executor.
+- Injector: https://www.unknowncheats.me/forum/general-programming-and-reversing/213038-extreme-injector-v3-7-a.html
+- Executor (what you inject into garry's mod): https://www.unknowncheats.me/forum/garry-s-mod/336196-internal-glua-loader.html
 Preview(s):
 - https://imgur.com/usi8SIO
 - https://imgur.com/OwDDxzd

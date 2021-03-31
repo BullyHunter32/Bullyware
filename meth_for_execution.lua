@@ -4478,9 +4478,9 @@ hook.Add("Think", "Aimbot", function ()
         end
         local headpos = methamphetamine:CalculateCurLimbPos( AimbotTarget , methamphetamine.mods["Aim"].Limb )
         local targetpos =  ( headpos  - LocalPlayer:GetShootPos() ):Angle() 
-        if methamphetamine.mods["Aim"]["NoRecoil"] and input.IsMouseDown( MOUSE_LEFT ) then
-            targetpos = targetpos - Angle(0,methamphetamine.CalculateRecoilCompensation(LocalPlayer).y,0)
-        end
+        --if methamphetamine.mods["Aim"]["NoRecoil"] and input.IsMouseDown( MOUSE_LEFT ) then
+            --targetpos = targetpos - Angle(0,methamphetamine.CalculateRecoilCompensation(LocalPlayer).y,0)
+        --end
         LocalPlayer:SetEyeAngles( methamphetamine.SmoothAim(targetpos) )
     else
         local priority = methamphetamine.mods["Aim"].Priority or "FOV"

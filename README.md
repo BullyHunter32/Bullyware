@@ -6,6 +6,13 @@ More formally known as Bullyware.
 This is just a little project of mine. Its a work in progress, it is not finished. There are missing pages and there may be errors.
 I dont mind if someone doesn't like it
 
+
+
+**Not updating this anymore. Yes, it has errors such as when you try to use no-recoil n what not. Feel free to paste from this cheat or something or use it as a meth.sol framework if u really wanna.**
+**Might upload my personal version with more features at some point... or at least make add some shit to this version to make it less detectable such as entirely un-screengrabbable visuals at some point**
+
+
+
 > Didn't think that i'd have to mention this but this cheat is not meant to be the best cheat in the world. Yes, it is made in Lua and I am very well aware that this is not made in C++. This was a project made for fun, not for commercial purposes. I couldn't give less of a shit if someone has something against this project I had fun making, but if you insist you want to cry about it, be my guest.
 
 Instructions:

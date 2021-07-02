@@ -29,7 +29,7 @@ If you are on a server where sv_allowcslua is 0 then you must use a 3rd party lu
 - Bypasser:
 - Pretty sure it only works on 32 bit gmod but hay hoe:
 - Detected by the glorious bSecure
-- https://cdn.discordapp.com/attachments/837060748282691654/860505379191390238/gmod_allowcslua_bypasser.exe
+- https://cdn.discordapp.com/attachments/837060748282691654/860513289150267452/gmod_allowcslua_bypasser.exe
 - If it gets picked up as a virus, its a false positive. The reason it gets picked up as a virus is because it reads and writes to memory :)
 
 Preview(s):

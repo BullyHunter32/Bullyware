@@ -28,7 +28,8 @@ Press `0` to open the menu, anticheats may detect you pressing insert. Better sa
 If you are on a server where sv_allowcslua is 0 then you must use a 3rd party lua executor or bypasser.
 - Bypasser:
 - Pretty sure it only works on 32 bit gmod but hay hoe:
-- https://cdn.discordapp.com/attachments/804740387176316938/860101598981128212/gmod_allowcslua_bypasser.exe
+- Detected by the glorious bSecure
+- https://cdn.discordapp.com/attachments/837060748282691654/860505379191390238/gmod_allowcslua_bypasser.exe
 - If it gets picked up as a virus, its a false positive. The reason it gets picked up as a virus is because it reads and writes to memory :)
 
 Preview(s):

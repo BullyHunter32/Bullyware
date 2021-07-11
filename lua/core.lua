@@ -14,7 +14,6 @@ methamphetamine.mods = {}
 methamphetamine.friends = {}
 methamphetamine.entityesp = {}
 methamphetamine.teams = {}
-methamphetamine.circles = include("circles.lua")
 methamphetamine["colors"] = {
     ["border"] = Color(80,80,80),
     ["text"] = Color(179,179,179),
